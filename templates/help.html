@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Help{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+  <div class="eyebrow-row">
+    <span class="eyebrow-chip">Support</span>
+  </div>
+  <h1>Need a quick handoff?</h1>
+  <p class="lead">Use this guide to get started with the camera, understand the supported vocabulary, and make the most of SignConnect.</p>
+</section>
+
+<section class="help-grid">
+  <article class="content-card">
+    <div class="card-header">
+      <span class="icon-badge">01</span>
+      <h2>Start translating</h2>
+    </div>
+    <ol class="help-list">
+      <li>Open the <a href="{{ url_for('translator') }}">Translator</a> page.</li>
+      <li>Allow camera access when prompted.</li>
+      <li>Hold a supported sign in front of the camera with a plain background.</li>
+      <li>Wait for a stable prediction, then tap <strong>Add to Sentence</strong> or use the speech controls.</li>
+    </ol>
+  </article>
+
+  <article class="content-card">
+    <div class="card-header">
+      <span class="icon-badge">02</span>
+      <h2>Supported signs</h2>
+    </div>
+    <p>SignConnect currently supports a focused set of words:</p>
+    <div class="chip-row">
+      <span class="chip">bad</span>
+      <span class="chip">call</span>
+      <span class="chip">doctor</span>
+      <span class="chip">emergency</span>
+      <span class="chip">food</span>
+      <span class="chip">good</span>
+      <span class="chip">hello</span>
+      <span class="chip">help</span>
+      <span class="chip">i</span>
+      <span class="chip">no</span>
+      <span class="chip">please</span>
+      <span class="chip">sorry</span>
+      <span class="chip">stop</span>
+      <span class="chip">thank-you</span>
+      <span class="chip">water</span>
+      <span class="chip">yes</span>
+      <span class="chip">you</span>
+    </div>
+  </article>
+
+  <article class="content-card">
+    <div class="card-header">
+      <span class="icon-badge">03</span>
+      <h2>Improve accuracy</h2>
+    </div>
+    <ul class="help-list">
+      <li>Keep your hand centered in the frame.</li>
+      <li>Use consistent lighting and a clean background.</li>
+      <li>Record signs on the <a href="{{ url_for('train') }}">Train</a> page with multiple variations.</li>
+      <li>Use the model only for the project-defined vocabulary it has been trained on.</li>
+    </ul>
+  </article>
+
+  <article class="content-card">
+    <div class="card-header">
+      <span class="icon-badge">04</span>
+      <h2>Accessibility</h2>
+    </div>
+    <ul class="help-list">
+      <li>Use the keyboard to navigate and focus controls.</li>
+      <li>Use the theme toggle and high-contrast mode when needed.</li>
+      <li>Use browser speech synthesis for spoken output when supported.</li>
+      <li>All camera processing stays on this device.</li>
+    </ul>
+  </article>
+</section>
+{% endblock %}

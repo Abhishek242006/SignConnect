@@ -1,0 +1,81 @@
+{% extends "base.html" %}{% block title %}Translator{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="eyebrow-row">
+    <span class="eyebrow-chip">Live translation</span>
+  </div>
+  <h1>Translator dashboard</h1>
+  <p class="lead">Recognize supported sign gestures, build a sentence, and speak the output with a clear, accessible workflow.</p>
+</section>
+
+<div id="modelWarn" class="warn" role="alert" hidden>
+  No trained model yet, so hands are tracked but signs cannot be recognised. Go to the <a href="{{ url_for('train') }}">Train page</a>, record each sign, then press Train.
+</div>
+<div id="emergency" class="emergency" role="alert" hidden>🚨 EMERGENCY SIGN DETECTED – someone may need urgent help!</div>
+
+<div class="dashboard-grid">
+  <section class="content-card camera-panel" aria-label="Camera preview">
+    <div class="card-header compact-header">
+      <h2>Camera</h2>
+      <span id="camStatus" class="status-pill neutral" aria-live="polite">Camera is off</span>
+    </div>
+    <div class="video-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="overlay"></canvas>
+      <div class="preview-overlay" aria-hidden="true">
+        <span>Hold your hand here</span>
+      </div>
+    </div>
+    <div class="row action-row">
+      <button id="startBtn" class="btn btn-primary">Start Camera</button>
+      <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+    </div>
+    <p class="helper-text">Use good lighting and keep the hand centered in the frame for stable recognition.</p>
+  </section>
+
+  <section class="content-card result-panel" aria-label="Recognition results">
+    <div class="card-header compact-header">
+      <h2>Recognized word</h2>
+      <span class="tiny-label">LIVE</span>
+    </div>
+    <div id="gesture" class="big-word" aria-live="polite">—</div>
+    <div class="meter" aria-hidden="true"><div id="confBar"></div></div>
+    <p class="confidence-row">Confidence: <strong id="confText">0%</strong> <span id="stateText" class="muted"></span></p>
+
+    <div class="result-actions row">
+      <button id="speakBtn" class="btn btn-primary">Speak Word</button>
+      <button id="copyWordBtn" class="btn btn-secondary">Copy</button>
+      <button id="addWordBtn" class="btn btn-secondary">Add to Sentence</button>
+      <button id="clearResultBtn" class="btn btn-ghost">Clear</button>
+    </div>
+
+    <div class="sentence-block">
+      <div class="card-header compact-header">
+        <h2>Sentence builder</h2>
+      </div>
+      <div id="sentence" class="sentence" aria-live="polite" tabindex="0">(signs will appear here)</div>
+      <div class="row sentence-tools">
+        <button id="speakSentenceBtn" class="btn btn-primary">Speak Sentence</button>
+        <button id="undoBtn" class="btn btn-secondary">Undo word</button>
+        <button id="clearBtn" class="btn btn-ghost">Clear sentence</button>
+        <button id="copySentenceBtn" class="btn btn-secondary">Copy sentence</button>
+      </div>
+      <div class="row language-row">
+        <label for="lang">Speech language</label>
+        <select id="lang">
+          <option value="en-US">English</option>
+          <option value="hi-IN">हिन्दी (Hindi)</option>
+          <option value="ta-IN">தமிழ் (Tamil)</option>
+          <option value="es-ES">Español</option>
+          <option value="fr-FR">Français</option>
+        </select>
+      </div>
+      <p id="speechMsg" class="warn" role="alert" hidden></p>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+<script src="{{ url_for('static', filename='js/translator.js') }}"></script>
+{% endblock %}

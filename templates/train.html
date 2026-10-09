@@ -1,0 +1,59 @@
+{% extends "base.html" %}{% block title %}Train{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+  <div class="eyebrow-row">
+    <span class="eyebrow-chip">Model training</span>
+  </div>
+  <h1>Record signs and train the model.</h1>
+  <p class="lead">The model can only recognise what you teach it. Record several variations of each sign, then train the classifier to improve the live translation result.</p>
+</section>
+
+<div id="err" class="warn" role="alert" hidden></div>
+<div class="dashboard-grid">
+  <section class="content-card">
+    <div class="card-header compact-header">
+      <h2>Camera feed</h2>
+      <span id="camStatus" class="status-pill neutral" aria-live="polite">Camera is off</span>
+    </div>
+    <div class="video-wrap"><video id="video" autoplay playsinline muted></video><canvas id="overlay"></canvas></div>
+    <div class="row">
+      <button id="startBtn" class="btn btn-primary">Start camera</button>
+      <button id="recBtn" class="btn btn-secondary" disabled>Record</button>
+    </div>
+  </section>
+  <section class="content-card">
+    <label for="signSel"><strong>Sign to record</strong></label>
+    <div class="row">
+      <select id="signSel" style="width:100%;">{% for s in signs %}<option value="{{ s.word }}" data-img="{{ s.img }}" data-video="{{ s.video or '' }}">{{ s.word }}</option>{% endfor %}</select>
+    </div>
+    <img id="refImg" class="target-img" alt="Reference hand shape">
+    <video id="refVid" class="target-img" muted loop autoplay playsinline controls hidden></video>
+    <div class="row">
+      <button id="photoBtn" class="btn btn-secondary" disabled>Save reference photo</button>
+      <button id="videoBtn" class="btn btn-secondary" disabled>Record demo video (3 s)</button>
+    </div>
+    <p class="helper-text">Tip: plain background, good light, hand centred – the photo / video then appears on the Learn page. Use the same hand shape you record for training.</p>
+    <div class="meter" aria-hidden="true"><div id="recBar"></div></div>
+    <p class="row"><strong id="recCount">0</strong> / <span id="recTarget">150</span> samples for this sign
+       <button id="delBtn" class="btn btn-ghost danger-text">Delete samples</button></p>
+  </section>
+</div>
+
+<section class="feature-block">
+  <div class="section-heading">
+    <span class="eyebrow-chip muted-chip">Dataset</span>
+    <h2>Current samples</h2>
+  </div>
+  <table id="stats"><tr><th>Sign</th><th>Samples</th><th>Status</th></tr></table>
+  <div class="row">
+    <button id="trainBtn" class="btn btn-primary">Train model</button>
+    <span id="trainMsg" aria-live="polite"></span>
+  </div>
+  <div id="results"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>window.SIGNS = {{ signs | tojson }};</script>
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+<script src="{{ url_for('static', filename='js/train.js') }}"></script>
+{% endblock %}

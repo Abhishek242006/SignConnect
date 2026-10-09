@@ -1,0 +1,102 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow-chip">AI-Powered Sign Recognition</span>
+    <h1>Turn Every Gesture Into Understanding.</h1>
+    <p>Bridge communication gaps with AI-powered sign recognition. Transform supported hand gestures into readable text through a simple, accessible experience.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="{{ url_for('translator') }}">Start Translating</a>
+      <a class="btn btn-secondary" href="{{ url_for('learn') }}">Explore Sign Dictionary</a>
+    </div>
+  </div>
+  <div class="hero-visual" aria-label="Illustration showing sign-to-text translation">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="device-shell">
+      <div class="device-header">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="device-content">
+        <div class="signal-card">
+          <span class="signal-label">Recognized</span>
+          <strong>HELLO</strong>
+        </div>
+        <div class="hand-figure" aria-hidden="true">
+          <div class="hand-glow"></div>
+        </div>
+        <div class="sentence-preview">Hello, how can I help?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature-block">
+  <div class="section-heading">
+    <span class="eyebrow-chip muted-chip">Core features</span>
+    <h2>Built for clear, comfortable communication.</h2>
+  </div>
+  <div class="card-grid feature-grid">
+    <article class="feature-card">
+      <div class="feature-icon">◉</div>
+      <h3>Live Sign Recognition</h3>
+      <p>Capture hand gestures through the camera and translate them into readable text in real time.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon">✦</div>
+      <h3>Instant Text Output</h3>
+      <p>Recognized words appear immediately so conversations stay natural and easy to follow.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon">🔊</div>
+      <h3>Text-to-Speech</h3>
+      <p>Use browser speech synthesis to read out words or full sentences for more inclusive support.</p>
+    </article>
+    <article class="feature-card">
+      <div class="feature-icon">♿</div>
+      <h3>Accessible by Design</h3>
+      <p>Clear controls, keyboard support, contrast options, and responsive layouts help more users participate.</p>
+    </article>
+  </div>
+</section>
+
+<section class="feature-block">
+  <div class="section-heading">
+    <span class="eyebrow-chip muted-chip">How it works</span>
+    <h2>Simple steps, meaningful results.</h2>
+  </div>
+  <div class="process-grid">
+    <article class="process-step">
+      <span class="step-number">1</span>
+      <h3>Allow camera access</h3>
+      <p>Grant permission and make sure your hand is visible in the preview.</p>
+    </article>
+    <article class="process-step">
+      <span class="step-number">2</span>
+      <h3>Perform a supported sign</h3>
+      <p>Hold the gesture in the camera frame until the model settles on a result.</p>
+    </article>
+    <article class="process-step">
+      <span class="step-number">3</span>
+      <h3>View and use the output</h3>
+      <p>Read the recognized word, add it to your sentence, or speak it aloud.</p>
+    </article>
+  </div>
+</section>
+
+<footer class="landing-footer">
+  <div>
+    <strong>SignConnect</strong>
+    <p>Inclusive communication for supported sign-language vocabulary.</p>
+  </div>
+  <div class="footer-links">
+    <a href="{{ url_for('translator') }}">Translator</a>
+    <a href="{{ url_for('learn') }}">Learn Signs</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('help') }}">Help</a>
+  </div>
+  <div>
+    <p>Supported vocabulary includes a focused set of static word signs. This project is designed for demo, learning, and research contexts.</p>
+  </div>
+</footer>
+{% endblock %}

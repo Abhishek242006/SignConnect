@@ -1,0 +1,54 @@
+{% extends "base.html" %}{% block title %}History{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+  <div class="eyebrow-row">
+    <span class="eyebrow-chip">Recent activity</span>
+  </div>
+  <h1>Translation history</h1>
+  <p class="lead">Review your most recent recognized sentences and copy them for reuse.</p>
+</section>
+
+<div class="toolbar-row history-toolbar">
+  <button id="delAll" class="btn btn-ghost danger-text">Clear all</button>
+</div>
+
+<ul id="list" class="history-list" aria-live="polite"></ul>
+<p id="empty" class="empty-state" hidden>No saved sentences yet. Sentences are saved when you press Speak or Clear.</p>
+{% endblock %}
+{% block scripts %}
+<script>
+const list = document.getElementById('list'), empty = document.getElementById('empty');
+async function load() {
+  const rows = await (await fetch('/api/history')).json();
+  list.innerHTML = ''; empty.hidden = rows.length > 0;
+  rows.forEach(r => {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+    li.innerHTML = `
+      <div class="history-meta">
+        <span class="history-time">${r.created_at}</span>
+        <strong class="history-text">${r.sentence}</strong>
+      </div>
+      <div class="history-actions">
+        <button class="btn btn-secondary copy-history" type="button">Copy</button>
+        <button class="btn btn-ghost delete-history" type="button">Delete</button>
+      </div>
+    `;
+    li.querySelector('.copy-history').onclick = async () => {
+      await navigator.clipboard.writeText(r.sentence);
+      const note = document.createElement('div');
+      note.className = 'toast';
+      note.textContent = 'Sentence copied';
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 1700);
+    };
+    li.querySelector('.delete-history').onclick = async () => { await fetch('/api/history/' + r.id, {method: 'DELETE'}); load(); };
+    list.appendChild(li);
+  });
+}
+document.getElementById('delAll').onclick = async () => {
+  if (confirm('Delete all history?')) { await fetch('/api/history', {method: 'DELETE'}); load(); }
+};
+load();
+</script>
+{% endblock %}

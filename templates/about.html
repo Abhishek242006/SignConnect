@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% block title %}About{% endblock %}
+{% block content %}
+<section class="about-hero">
+  <p class="eyebrow">Inclusive Technology</p>
+  <h1>SignConnect</h1>
+  <p class="lead">An on-device AI assistant that turns hand gestures into text and speech, built to lower the communication barrier between sign-language users and people who don't sign.</p>
+  <div class="stat-row">
+    <div class="stat"><b>{{ signs|length }}</b><span>defined signs</span></div>
+    <div class="stat"><b>21</b><span>hand landmarks</span></div>
+    <div class="stat"><b>4</b><span>models compared</span></div>
+    <div class="stat"><b>100%</b><span>local processing</span></div>
+  </div>
+</section>
+
+<section class="about-sec"><h2>1. Problem statement</h2>
+  <p>People who communicate in sign language often cannot be understood by those who do not know it, which creates barriers in healthcare, education, public services and everyday life. SignConnect explores a low-cost, camera-only way to bridge that gap for a small, clearly defined vocabulary.</p></section>
+
+<section class="about-sec"><h2>2. How the system works</h2>
+  <ol class="pipeline">
+    <li><b>Capture</b><span>Webcam frame via the browser</span></li>
+    <li><b>Detect</b><span>MediaPipe Hands finds the hand</span></li>
+    <li><b>Extract</b><span>21 landmarks → 63 values</span></li>
+    <li><b>Normalize</b><span>Wrist-centred, size-independent</span></li>
+    <li><b>Classify</b><span>Trained scikit-learn model</span></li>
+    <li><b>Threshold</b><span>Below 70% → “Unknown”</span></li>
+    <li><b>Speak</b><span>Sentence + text-to-speech</span></li>
+  </ol></section>
+
+<section class="about-sec"><h2>3. Technology stack</h2>
+  <div class="chips">
+    {% for t in ['Python','Flask','OpenCV','MediaPipe Hands','NumPy','Pandas','scikit-learn','SQLite','HTML / CSS / JavaScript','Web Speech API'] %}<span class="chip">{{ t }}</span>{% endfor %}
+  </div></section>
+
+<section class="about-sec"><h2>4. Machine-learning methodology</h2>
+  <div class="grid">
+    <div class="card"><h3>Features</h3><p>Landmarks are translated so the wrist is the origin and scaled by the largest hand extent, so results do not depend on where the hand is or how close it is.</p></div>
+    <div class="card"><h3>Model selection</h3><p>Random Forest, SVM (RBF), KNN and an MLP neural network are trained on a stratified 80/20 split and compared with 5-fold cross-validation. The best F1 score wins.</p></div>
+    <div class="card"><h3>Reliability</h3><p>A confidence threshold rejects uncertain predictions, and a word is added only after it is stable over several consecutive frames.</p></div>
+  </div></section>
+
+<section class="about-sec"><h2>5. Dataset</h2>
+  <p>The dataset is recorded by the user on the <a href="/train">Train page</a> (or <code>ml/collect_data.py</code>) and stored locally as normalized landmarks, never as images.</p>
+  <table>
+    <tr><th>Sign</th><th>Samples recorded</th></tr>
+    {% for s in signs %}<tr><td>{{ s.word }}</td><td>{{ samples.get(s.word, 0) }}</td></tr>{% endfor %}
+  </table></section>
+
+<section class="about-sec"><h2>6. Model evaluation</h2>
+{% if report %}
+  <p>Best model: <b>{{ report.best_model }}</b> · {{ report.n_samples }} samples · evaluated on a held-out 20% test set.</p>
+  <table>
+    <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>CV accuracy</th></tr>
+    {% for name, m in report.models.items() %}
+    <tr{% if name == report.best_model %} class="best"{% endif %}><td>{{ name }}</td><td>{{ '%.3f' % m.accuracy }}</td><td>{{ '%.3f' % m.precision }}</td><td>{{ '%.3f' % m.recall }}</td><td>{{ '%.3f' % m.f1 }}</td><td>{{ '%.3f' % m.cv_accuracy }}</td></tr>
+    {% endfor %}
+  </table>
+  <h3>Confusion matrix</h3>
+  <img src="/model/confusion_matrix.png" alt="Confusion matrix of the best model" class="cm">
+{% else %}
+  <p class="warn">No model has been trained yet, so there are no evaluation results. Record signs and train on the <a href="/train">Train page</a>.</p>
+{% endif %}</section>
+
+<section class="about-sec"><h2>7. Limitations &amp; responsible use</h2>
+  <ul>
+    <li>Gestures are project-defined, single-frame, one-hand shapes – not a full ASL/ISL translator, and motion-based signs are not supported.</li>
+    <li>Accuracy depends on the data you record: lighting, camera, hand and number of people.</li>
+    <li>Not for medical or safety-critical decisions; always confirm important messages with the person.</li>
+    <li>Privacy: frames are processed on this computer and are not stored or uploaded.</li>
+  </ul></section>
+
+<section class="about-sec"><h2>8. Roadmap</h2>
+  <div class="chips"><span class="chip">Two-hand support</span><span class="chip">Motion signs (LSTM)</span><span class="chip">User accounts</span><span class="chip">More languages</span><span class="chip">Mobile app</span></div></section>
+{% endblock %}

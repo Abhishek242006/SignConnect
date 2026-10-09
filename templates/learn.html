@@ -1,0 +1,81 @@
+{% extends "base.html" %}{% block title %}Learn Signs{% endblock %}
+{% block content %}
+<section class="page-hero compact">
+  <div class="eyebrow-row">
+    <span class="eyebrow-chip">Vocabulary</span>
+  </div>
+  <h1>Learn the supported signs.</h1>
+  <p class="lead">Browse the project-defined sign library, view the reference media, and practice with the camera.</p>
+</section>
+
+<div class="dictionary-toolbar">
+  <label class="search-field" for="signSearch">
+    <span>Search signs</span>
+    <input id="signSearch" type="search" placeholder="Search words..." aria-label="Search sign vocabulary">
+  </label>
+</div>
+
+<p class="muted">Pictures show the hand shape for each sign. They are project-defined gestures, not official ASL/ISL. Want real photos? Capture them on the <a href="{{ url_for('train') }}">Train page</a>. Only signs your model was trained on can be recognised.</p>
+
+<div class="card-grid sign-grid" id="signGrid">
+  {% for s in signs %}
+  <article class="feature-card sign-card" data-word="{{ s.word | lower }}">
+    {% if s.video %}
+    <video class="sign-media" src="{{ s.video }}" muted loop autoplay playsinline controls preload="metadata" aria-label="Video of the sign {{ s.word }}"></video>
+    {% else %}
+    <img class="sign-media{% if s.photo %} photo{% endif %}" src="{{ s.img }}" alt="Hand shape for the sign {{ s.word }}" loading="lazy">
+    {% endif %}
+    <h3>{{ s.word }}{% if s.emergency %} 🚨{% endif %}</h3>
+    <p>{{ s.meaning }}</p>
+  </article>
+  {% endfor %}
+</div>
+<p id="signEmpty" class="empty-state" hidden>No signs match your search. Try another term.</p>
+
+<script>if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('.sign-card video').forEach(v => { v.pause(); v.autoplay = false; });</script>
+{% if credit %}<p class="muted">Sign videos: ISL isolated-words dataset (INCLUDE, CISLR and other sources) – see <code>static/signs/videos/ATTRIBUTION.txt</code> for per-clip credits and licences.</p>{% endif %}
+
+<section class="practice-panel">
+  <div class="section-heading">
+    <span class="eyebrow-chip muted-chip">Practice mode</span>
+    <h2>Try a sign in front of the camera.</h2>
+  </div>
+  <div id="modelWarn" class="warn" role="alert" hidden>No trained model yet – practice needs one. Use the <a href="{{ url_for('train') }}">Train page</a> first.</div>
+  <div class="dashboard-grid narrow-grid">
+    <section class="content-card">
+      <div class="video-wrap"><video id="video" autoplay playsinline muted></video><canvas id="overlay"></canvas></div>
+      <div class="row"><button id="startBtn" class="btn btn-primary">Start practice</button><button id="skipBtn" class="btn btn-secondary" disabled>Skip</button></div>
+    </section>
+    <section class="content-card">
+      <p class="helper-text"><strong>Show this sign:</strong></p>
+      <img id="targetImg" class="target-img" alt="" hidden>
+      <video id="targetVid" class="target-img" muted loop autoplay playsinline controls hidden></video>
+      <div id="target" class="big-word">—</div>
+      <p aria-live="polite">You show: <b id="seen">—</b> (<span id="conf">0%</span>)</p>
+      <p id="result" class="ok" aria-live="polite"></p>
+      <p>Score: <b id="score">0</b></p>
+    </section>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>window.SIGNS = {{ signs | tojson }};</script>
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+<script src="{{ url_for('static', filename='js/practice.js') }}"></script>
+<script>
+  const searchInput = document.getElementById('signSearch');
+  const cards = [...document.querySelectorAll('.sign-card')];
+  const emptyState = document.getElementById('signEmpty');
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const match = !term || card.dataset.word.includes(term) || card.querySelector('h3').textContent.toLowerCase().includes(term);
+      const show = match ? '' : 'hidden-card';
+      card.classList.toggle('hidden-card', !match);
+      if (match) visible += 1;
+    });
+    emptyState.hidden = visible !== 0;
+  });
+</script>
+{% endblock %}
